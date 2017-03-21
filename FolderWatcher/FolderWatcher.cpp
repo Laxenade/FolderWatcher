@@ -74,7 +74,7 @@ void WatchDirectory(LPTSTR lpDir)
 
 	// Make a final validation check on our handles.
 
-	if ((dwChangeHandles[0] == NULL) || (dwChangeHandles[1] == NULL) || (dwChangeHandles[2] == NULL))
+	if ((dwChangeHandles[0] == nullptr) || (dwChangeHandles[1] == nullptr) || (dwChangeHandles[2] == nullptr))
 	{
 		printf("\n ERROR: Unexpected NULL from FindFirstChangeNotification.\n");
 		ExitProcess(GetLastError());
@@ -85,10 +85,10 @@ void WatchDirectory(LPTSTR lpDir)
 
 	_tprintf(TEXT("Waiting for change notification on %s...\n"), lpDir);
 
-	while (TRUE)
+	while (true)
 	{
 		printf("Current Directory:\n");
-		GetDirList((char*)lpDir, 0);
+		GetDirList(static_cast<char*>(lpDir), 0);
 		printf("------------------------------------------------\n");
 
 		// Wait for notification.
@@ -148,7 +148,6 @@ void WatchDirectory(LPTSTR lpDir)
 		default:
 			printf("\n ERROR: Unhandled dwWaitStatus.\n");
 			ExitProcess(GetLastError());
-			break;
 		}
 	}
 }
@@ -167,9 +166,9 @@ void GetDirList(char* lpDir, int indent)
 {
 	DIR *dir;
 	struct dirent *ent;
-	if ((dir = opendir(lpDir)) != NULL) {
+	if ((dir = opendir(lpDir)) != nullptr) {
 		/* print all the files and directories within directory */
-		while ((ent = readdir(dir)) != NULL) {
+		while ((ent = readdir(dir)) != nullptr) {
 			if (ent->d_type == DT_DIR && strcmp(ent->d_name, ".") != 0 && strcmp(ent->d_name, "..") != 0) {
 				printByIndentLevel(ent->d_name, indent);
 				char* newName = concatPath(lpDir, ent->d_name);
@@ -190,13 +189,13 @@ void GetDirList(char* lpDir, int indent)
 
 void printByIndentLevel(char* str, int indent)
 {
-	for (int i = 0; i < indent; i++) printf(" ");
+	for (auto i = 0; i < indent; i++) printf(" ");
 	printf("%s\n", str);
 }
 
 char* concatPath(char* prefix, char* path)
 {
-	char* newName = (char*)malloc(512 * sizeof(char));
+	auto newName = static_cast<char*>(malloc(512 * sizeof(char)));
 	strcpy(newName, prefix);
 	strcat(newName, path);
 	strcat(newName, "\\");
